@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { api } from "@/trpc/react";
 import portfolioData from "@/data/portfolio.json";
 
 export function Contact() {
@@ -25,7 +23,7 @@ export function Contact() {
         </motion.div>
 
         <motion.div
-          className="mb-16 mt-16 text-center"
+          className="mt-16 mb-16 text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

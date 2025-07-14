@@ -24,9 +24,9 @@ Title: ${portfolioData.personal.title}
 Bio: ${portfolioData.personal.bio}
 
 Skills:
-Frontend: ${portfolioData.skills.frontend.map((s) => `${s.name} (${s.level}%, ${s.years} years)`).join(", ")}
-Backend: ${portfolioData.skills.backend.map((s) => `${s.name} (${s.level}%, ${s.years} years)`).join(", ")}
-Tools: ${portfolioData.skills.tools.map((s) => `${s.name} (${s.level}%, ${s.years} years)`).join(", ")}
+Frontend: ${portfolioData.skills.frontend.map((s) => `${s.name} (${s.level}%)`).join(", ")}
+Backend: ${portfolioData.skills.backend.map((s) => `${s.name} (${s.level}%)`).join(", ")}
+Tools: ${portfolioData.skills.tools.map((s) => `${s.name} (${s.level}%)`).join(", ")}
 
 Projects:
 ${portfolioData.projects.map((p) => `${p.title}: ${p.description} (Tech: ${p.tech.join(", ")})`).join("\n")}
@@ -80,8 +80,8 @@ ${portfolioData.experience.map((e) => `${e.position} at ${e.company} (${e.durati
     ]);
 
     const result = await generateWithTimeout;
-    const response = (result as any).response;
-    const text = response.text();
+    const response = (result as { response: { text: () => Promise<string> } }).response;
+    const text = await response.text();
 
     // Try to parse as JSON, fallback to plain text
     let aiResponse: {
@@ -99,7 +99,7 @@ ${portfolioData.experience.map((e) => `${e.position} at ${e.company} (${e.durati
     } catch {
       aiResponse = {
         response: text,
-        section: sectionToNavigate,
+        section: sectionToNavigate || "",
         highlight: "",
       };
     }
