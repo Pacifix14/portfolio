@@ -1,0 +1,191 @@
+{
+  "personal": {
+    "name": "TOO HONG YEE JASPER",
+    "title": "TypeScript & AI-Focused Software Developer",
+    "bio": "Year 3 Diploma in Information Technology student at Singapore Polytechnic. Passionate about building practical, thoughtful tools using the T3 Stack and AI prompting frameworks. Always building, self-hosting, and experimenting to push the boundaries of everyday tech.",
+    "location": "Singapore",
+    "email": "pacifixsushi@gmail.com",
+    "github": "https://github.com/Pacifix14",
+    "linkedin": "https://linkedin.com/in/jasper-too",
+    "resume": "/resume.pdf"
+  },
+  "skills": {
+    "frontend": [
+      { "name": "TypeScript", "level": 90 },
+      { "name": "React.js", "level": 90 },
+      { "name": "Next.js", "level": 90 },
+      { "name": "Tailwind CSS", "level": 85 },
+      { "name": "ShadCN/UI", "level": 90 },
+      { "name": "HTML5", "level": 50 },
+      { "name": "CSS3", "level": 60 }
+    ],
+    "backend": [
+      { "name": "Node.js", "level": 60 },
+      { "name": "tRPC", "level": 85 },
+      { "name": "MySQL", "level": 60 },
+      { "name": "PostgreSQL", "level": 70 },
+      { "name": "Prisma", "level": 80 },
+      { "name": "RESTful APIs", "level": 60 },
+      { "name": "OAuth2", "level": 75 }
+    ],
+    "tools": [
+      { "name": "Git", "level": 90 },
+      { "name": "OpenAI SDK", "level": 70 },
+      { "name": "Vercel", "level": 70 },
+      { "name": "NGINX", "level": 40 },
+      { "name": "Java", "level": 60 },
+      { "name": "Python", "level": 50 }
+    ]
+  },
+  "projects": [
+    {
+      "id": "1",
+      "title": "Collaborative AI Note-Taking Platform",
+      "description": "Online note-taking website with interactive AI assistance using Gemini. Built collaboratively with Dean and Yoon Fay using T3 Stack and ShadCN components. I joined the project after initial creation by Dean.",
+      "tech": [
+        "T3 Stack",
+        "TypeScript",
+        "Next.js",
+        "tRPC",
+        "ShadCN/UI",
+        "Tailwind CSS",
+        "Gemini AI",
+        "Collaborative Development"
+      ],
+      "github": "https://github.com/dean-yoon-jasper/collaborative-notes",
+      "demo": "https://collaborative-notes.vercel.app",
+      "image": "/projects/collaborative-notes.jpg",
+      "featured": false,
+      "status": "ongoing"
+    },
+    {
+      "id": "2",
+      "title": "AI Video Hook Creator & Self-Hosted Platform",
+      "description": "Self-hosted video processing platform that transcribes videos, finds compelling hooks, splices them to the front, and generates captions using OpenAI. Built with Flask backend and deployed on Mac Mini with NGINX reverse proxy",
+      "tech": [
+        "Python Flask",
+        "JavaScript",
+        "FFmpeg",
+        "OpenAI API",
+        "NGINX",
+        "Waitress",
+        "Mac Mini",
+        "Static IP",
+        "Port Forwarding"
+      ],
+      "github": "https://github.com/Pacifix14/video-hook-creator",
+      "demo": "",
+      "image": "/projects/video-hook-system.jpg",
+      "featured": false,
+      "status": "completed"
+    },
+    {
+      "id": "3",
+      "title": "Spwipe - AI Music Discovery Platform",
+      "description": "AI-powered music discovery platform that analyzes Spotify playlists and provides song recommendations through a swipe-based interface with vibe profiling",
+      "tech": [
+        "Next.js 15",
+        "TypeScript",
+        "tRPC",
+        "Prisma",
+        "PostgreSQL",
+        "Tailwind CSS",
+        "Spotify API",
+        "Deezer API"
+      ],
+      "github": "https://github.com/Pacifix14/spwipe",
+      "demo": "https://spwipe.vercel.app",
+      "image": "/projects/spwipe.jpg",
+      "featured": false,
+      "status": "ongoing"
+    }
+  ],
+  "experience": [
+    {
+      "company": "Technology Learning Journey",
+      "position": "Database Systems & Advanced Development",
+      "duration": "2024 - Present",
+      "location": "Singapore",
+      "description": "Advanced learning in database systems with focus on database design principles and data management",
+      "achievements": [
+        "Studied database systems using pgAdmin 4",
+        "Learned schemas, ERD design, and normalization",
+        "Developed data sorting techniques",
+        "Advanced database management skills"
+      ]
+    },
+    {
+      "company": "Technology Learning Journey",
+      "position": "Full-Stack Web Development",
+      "duration": "2023",
+      "location": "Singapore",
+      "description": "Comprehensive year of full-stack development including frontend enhancement, API integration, and backend systems",
+      "achievements": [
+        "Enhanced HTML/CSS skills with multiple website projects",
+        "Created e-commerce sites and interactive forms",
+        "Built movie review application with RESTful API",
+        "Integrated external IMDB database",
+        "Learned MySQL and CRUD framework operations",
+        "Studied MVC design patterns",
+        "Developed RPG-style eco game with backend integration",
+        "Mastered DOM interface manipulation"
+      ]
+    },
+    {
+      "company": "Technology Learning Journey",
+      "position": "Programming Foundations & Web Development",
+      "duration": "2022",
+      "location": "Singapore",
+      "description": "Beginning of formal programming education and self-directed web development learning",
+      "achievements": [
+        "Learned Scratch programming in Lower Secondary (ALP)",
+        "Studied existing games and coding fundamentals",
+        "Self-taught HTML & CSS through online resources and YouTube",
+        "Created first personal portfolio website",
+        "Developed problem-solving skills and coding fluency",
+        "Built foundation in web development technologies"
+      ]
+    },
+    {
+      "company": "Personal Growth",
+      "position": "Technology Enthusiast",
+      "duration": "Childhood - 2021",
+      "location": "Singapore",
+      "description": "Early development of passion for technology and aspiration to work in tech industry",
+      "achievements": [
+        "Developed early interest in technology and coding",
+        "Viewed technology as 'art form of human imagination'",
+        "Cultivated aspiration to work in tech industry",
+        "Built foundational curiosity about how technology works"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Singapore Polytechnic",
+      "degree": "Diploma in Information Technology",
+      "duration": "2022 - May 2026 (Expected)",
+      "location": "Singapore",
+      "specialization": "Software Development",
+      "description": "Currently in Year 3, focusing on TypeScript and AI-driven development",
+      "achievements": [
+        "Specializing in T3 Stack development and AI integration",
+        "Building practical tools and automated workflows",
+        "Exploring Model Context Protocols (MCPs) and event-based architectures"
+      ]
+    },
+    {
+      "institution": "Secondary Education",
+      "degree": "GCE 'O' Levels",
+      "duration": "2019 – 2022",
+      "location": "Singapore",
+      "specialization": "",
+      "description": "Completed General Certificate of Education Ordinary Level examinations",
+      "achievements": [
+        "Strong foundation in mathematics and sciences",
+        "Developed analytical and problem-solving skills",
+        "Prepared for advanced technical education"
+      ]
+    }
+  ]
+}

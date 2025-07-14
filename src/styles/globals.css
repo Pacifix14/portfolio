@@ -1,6 +1,72 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
+  --font-sans:
+    var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* Glass Design System - ShadCN Dark + Glassmorphism */
+:root {
+  /* Glass transparency levels */
+  --glass-subtle: rgba(255, 255, 255, 0.03);
+  --glass-base: rgba(255, 255, 255, 0.05);
+  --glass-elevated: rgba(255, 255, 255, 0.08);
+  --glass-interactive: rgba(255, 255, 255, 0.1);
+  --glass-prominent: rgba(255, 255, 255, 0.12);
+
+  /* Glass borders */
+  --glass-border-subtle: rgba(255, 255, 255, 0.08);
+  --glass-border-base: rgba(255, 255, 255, 0.1);
+  --glass-border-elevated: rgba(255, 255, 255, 0.15);
+
+  /* Glass shadows */
+  --glass-shadow-subtle: rgba(0, 0, 0, 0.1);
+  --glass-shadow-base: rgba(0, 0, 0, 0.25);
+  --glass-shadow-elevated: rgba(0, 0, 0, 0.4);
+}
+
+/* Glass utility classes */
+.glass-card {
+  background: var(--glass-base);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border-base);
+  box-shadow: 0 25px 50px -12px var(--glass-shadow-base);
+}
+
+.glass-card-subtle {
+  background: var(--glass-subtle);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border-subtle);
+  box-shadow: 0 20px 25px -5px var(--glass-shadow-subtle);
+}
+
+.glass-card-elevated {
+  background: var(--glass-elevated);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border-elevated);
+  box-shadow: 0 25px 50px -12px var(--glass-shadow-elevated);
+}
+
+.glass-interactive {
+  background: var(--glass-interactive);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border-base);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-interactive:hover {
+  background: var(--glass-prominent);
+  border-color: var(--glass-border-elevated);
+  transform: translateY(-2px);
+}
+
+/* Glass noise texture for premium feel */
+.glass-texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
 }
