@@ -102,6 +102,21 @@
   ],
   "experience": [
     {
+      "company": "Software Development Internship",
+      "position": "Full-Stack Developer Intern",
+      "duration": "2025",
+      "location": "Singapore",
+      "description": "Maintained and enhanced internal applications using T3 Stack architecture, similar to collaborative note-taking platforms, while developing new websites from scratch",
+      "achievements": [
+        "Maintained internal applications built with T3 Stack (Next.js, TypeScript, tRPC, Prisma)",
+        "Enhanced existing codebases with new features and bug fixes",
+        "Developed new websites from concept to deployment",
+        "Worked with modern development tools and practices",
+        "Collaborated on full-stack applications with database integration",
+        "Gained hands-on experience with production-level TypeScript development"
+      ]
+    },
+    {
       "company": "Technology Learning Journey",
       "position": "Database Systems & Advanced Development",
       "duration": "2024 - Present",

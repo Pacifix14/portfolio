@@ -528,7 +528,7 @@ export function UnifiedInterface({
         {/* Input Form */}
         <form onSubmit={handleSubmit} className="p-4">
           <div className="flex items-end space-x-3">
-            <div 
+            <div
               className="relative flex-1 cursor-text"
               onClick={() => {
                 if (!isExpanded) {
@@ -585,7 +585,7 @@ export function UnifiedInterface({
               <button
                 type="submit"
                 disabled={!inputValue.trim() || isLoading}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg bg-blue-600 p-2 text-white transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="absolute top-1/2 right-3 -translate-y-1/2 rounded-lg bg-blue-600 p-2 text-white transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <svg
                   className="h-4 w-4"
