@@ -6,7 +6,7 @@ import { Geist } from "next/font/google";
 import { TRPCReactProvider } from "@/trpc/react";
 
 export const metadata: Metadata = {
-  title: "Your Name - Full Stack Developer",
+  title: "Jasper - Full Stack Developer",
   description:
     "Passionate full stack developer specializing in React, Next.js, and modern web technologies. Check out my projects and get in touch!",
   icons: [{ rel: "icon", url: "/favicon.ico" }],

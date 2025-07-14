@@ -80,7 +80,8 @@ ${portfolioData.experience.map((e) => `${e.position} at ${e.company} (${e.durati
     ]);
 
     const result = await generateWithTimeout;
-    const response = (result as { response: { text: () => Promise<string> } }).response;
+    const response = (result as { response: { text: () => Promise<string> } })
+      .response;
     const text = await response.text();
 
     // Try to parse as JSON, fallback to plain text

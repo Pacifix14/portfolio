@@ -3,19 +3,19 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Command } from "cmdk";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
 import { TypewriterText } from "./typewriter-text";
+import { api } from "@/trpc/react";
+import type { TRPCClientErrorLike } from "@trpc/client";
+import { skipToken } from "@tanstack/react-query";
 
 type ChatMessage = {
   id: string;
   content: string;
   isUser: boolean;
   timestamp: Date;
-};
-
-type AIResponse = {
-  response: string;
-  section: string;
-  highlight: string;
 };
 
 type UnifiedInterfaceProps = {
@@ -31,8 +31,63 @@ export function UnifiedInterface({
   const [isFocused, setIsFocused] = useState(false);
   const [mode, setMode] = useState<"chat" | "command">("chat");
   const [isExpanded, setIsExpanded] = useState(false);
+  const [currentStreamingMessage, setCurrentStreamingMessage] =
+    useState<string>("");
+  const [chatInput, setChatInput] = useState<{
+    command: string;
+    query: string;
+  } | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Use tRPC subscription hook
+  api.portfolio.chat.useSubscription(chatInput ?? skipToken, {
+    onData: (data: {
+      content: string;
+      done: boolean;
+      section: string;
+      highlight: string;
+    }) => {
+      if (data.done) {
+        // Streaming complete, add final message
+        const aiMessage: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          content: currentStreamingMessage,
+          isUser: false,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, aiMessage]);
+        setCurrentStreamingMessage("");
+        setIsLoading(false);
+        setChatInput(null);
+
+        // Auto-navigate to relevant section
+        if (data.section && onNavigateToSection) {
+          setTimeout(() => {
+            scrollToSection(data.section);
+            onNavigateToSection(data.section);
+          }, 1000);
+        }
+      } else {
+        // Accumulate streaming content
+        setCurrentStreamingMessage((prev) => prev + data.content);
+      }
+    },
+    onError: (error: TRPCClientErrorLike<unknown>) => {
+      console.error("Streaming error:", error);
+      const errorMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        content:
+          "Sorry, I encountered an error processing your request. Please try again.",
+        isUser: false,
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+      setIsLoading(false);
+      setCurrentStreamingMessage("");
+      setChatInput(null);
+    },
+  });
 
   const placeholderTexts = [
     "Tell me about your React skills...",
@@ -123,7 +178,7 @@ export function UnifiedInterface({
     }
   };
 
-  const processInput = async (input: string) => {
+  const processInput = (input: string) => {
     if (!input.trim()) return;
 
     // Handle slash commands
@@ -137,16 +192,16 @@ export function UnifiedInterface({
 
       if (aiCommand) {
         const query = commandText.slice(aiCommand.command.length).trim();
-        await processAICommand(aiCommand.command, query);
+        processAICommand(aiCommand.command, query);
         return;
       }
     }
 
     // Handle natural language chat
-    await processAICommand("general", input);
+    processAICommand("general", input);
   };
 
-  const processAICommand = async (command: string, query: string) => {
+  const processAICommand = (command: string, query: string) => {
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       content: inputValue,
@@ -159,112 +214,69 @@ export function UnifiedInterface({
     setMode("chat");
     setIsLoading(true);
     setIsExpanded(true);
+    setCurrentStreamingMessage("");
 
-    try {
-      // Smart command detection for natural language
-      if (command === "general") {
-        const input = query.toLowerCase();
-        if (
-          input.includes("skill") ||
-          input.includes("technology") ||
-          input.includes("tech")
-        ) {
-          command = "skills";
-          query = input
-            .replace(
-              /(tell me about|show me|what about|skills?|technology|tech)/gi,
-              "",
-            )
-            .trim();
-        } else if (
-          input.includes("project") ||
-          input.includes("built") ||
-          input.includes("work")
-        ) {
-          command = "projects";
-          query = input
-            .replace(/(what|show me|tell me about|projects?|built|work)/gi, "")
-            .trim();
-        } else if (
-          input.includes("experience") ||
-          input.includes("background") ||
-          input.includes("worked")
-        ) {
-          command = "experience";
-          query = input
-            .replace(
-              /(tell me about|show me|what's|experience|background|worked)/gi,
-              "",
-            )
-            .trim();
-        } else if (
-          input.includes("summary") ||
-          input.includes("overview") ||
-          input.includes("about you")
-        ) {
-          command = "summary";
-          query = "";
-        } else if (
-          input.includes("contact") ||
-          input.includes("reach") ||
-          input.includes("email")
-        ) {
-          command = "contact";
-          query = "";
-        }
+    // Smart command detection for natural language
+    if (command === "general") {
+      const input = query.toLowerCase();
+      if (
+        input.includes("skill") ||
+        input.includes("technology") ||
+        input.includes("tech")
+      ) {
+        command = "skills";
+        query = input
+          .replace(
+            /(tell me about|show me|what about|skills?|technology|tech)/gi,
+            "",
+          )
+          .trim();
+      } else if (
+        input.includes("project") ||
+        input.includes("built") ||
+        input.includes("work")
+      ) {
+        command = "projects";
+        query = input
+          .replace(/(what|show me|tell me about|projects?|built|work)/gi, "")
+          .trim();
+      } else if (
+        input.includes("experience") ||
+        input.includes("background") ||
+        input.includes("worked")
+      ) {
+        command = "experience";
+        query = input
+          .replace(
+            /(tell me about|show me|what's|experience|background|worked)/gi,
+            "",
+          )
+          .trim();
+      } else if (
+        input.includes("summary") ||
+        input.includes("overview") ||
+        input.includes("about you")
+      ) {
+        command = "summary";
+        query = "";
+      } else if (
+        input.includes("contact") ||
+        input.includes("reach") ||
+        input.includes("email")
+      ) {
+        command = "contact";
+        query = "";
       }
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-
-      const response = await fetch("/api/portfolio-command", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ command, query }),
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) throw new Error("Failed to process command");
-
-      const data = (await response.json()) as AIResponse;
-
-      const aiMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        content: data.response,
-        isUser: false,
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, aiMessage]);
-
-      // Auto-navigate to relevant section
-      if (data.section && onNavigateToSection) {
-        setTimeout(() => {
-          scrollToSection(data.section);
-          onNavigateToSection(data.section);
-        }, 1000);
-      }
-    } catch (error) {
-      console.error("Error processing command:", error);
-      const errorMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        content:
-          "Sorry, I encountered an error processing your request. Please try again.",
-        isUser: false,
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
     }
+
+    // Trigger the subscription by setting the chatInput
+    setChatInput({ command, query });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim()) {
-      void processInput(inputValue);
+      processInput(inputValue);
     }
   };
 
@@ -328,20 +340,170 @@ export function UnifiedInterface({
                             : "bg-zinc-800 text-zinc-300"
                         }`}
                       >
-                        <p className="text-sm leading-relaxed">
-                          {message.content}
-                        </p>
+                        {message.isUser ? (
+                          <p className="text-sm leading-relaxed">
+                            {message.content}
+                          </p>
+                        ) : (
+                          <div className="prose prose-invert prose-sm max-w-none text-sm leading-relaxed">
+                            <ReactMarkdown
+                              remarkPlugins={[remarkGfm]}
+                              rehypePlugins={[rehypeHighlight]}
+                              components={{
+                                code: ({ className, children, ...props }) => {
+                                  const match = /language-(\w+)/.exec(
+                                    className ?? "",
+                                  );
+                                  return match ? (
+                                    <pre className="overflow-x-auto rounded bg-zinc-900 p-3">
+                                      <code className={className} {...props}>
+                                        {children}
+                                      </code>
+                                    </pre>
+                                  ) : (
+                                    <code
+                                      className="rounded bg-zinc-700 px-1 py-0.5 text-zinc-200"
+                                      {...props}
+                                    >
+                                      {children}
+                                    </code>
+                                  );
+                                },
+                                h1: ({ children }) => (
+                                  <h1 className="mb-2 text-lg font-bold text-zinc-100">
+                                    {children}
+                                  </h1>
+                                ),
+                                h2: ({ children }) => (
+                                  <h2 className="mb-2 text-base font-semibold text-zinc-100">
+                                    {children}
+                                  </h2>
+                                ),
+                                h3: ({ children }) => (
+                                  <h3 className="mb-1 text-sm font-medium text-zinc-100">
+                                    {children}
+                                  </h3>
+                                ),
+                                ul: ({ children }) => (
+                                  <ul className="list-inside list-disc space-y-1 text-zinc-300">
+                                    {children}
+                                  </ul>
+                                ),
+                                ol: ({ children }) => (
+                                  <ol className="list-inside list-decimal space-y-1 text-zinc-300">
+                                    {children}
+                                  </ol>
+                                ),
+                                li: ({ children }) => (
+                                  <li className="text-sm">{children}</li>
+                                ),
+                                p: ({ children }) => (
+                                  <p className="mb-2 text-zinc-300 last:mb-0">
+                                    {children}
+                                  </p>
+                                ),
+                                strong: ({ children }) => (
+                                  <strong className="font-semibold text-zinc-100">
+                                    {children}
+                                  </strong>
+                                ),
+                                em: ({ children }) => (
+                                  <em className="text-zinc-200 italic">
+                                    {children}
+                                  </em>
+                                ),
+                              }}
+                            >
+                              {message.content}
+                            </ReactMarkdown>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
                   {isLoading && (
                     <div className="flex justify-start">
                       <div className="max-w-[80%] rounded-2xl bg-zinc-800 px-4 py-2">
-                        <div className="flex space-x-1">
-                          <div className="h-2 w-2 animate-bounce rounded-full bg-zinc-500 [animation-delay:-0.3s]" />
-                          <div className="h-2 w-2 animate-bounce rounded-full bg-zinc-500 [animation-delay:-0.15s]" />
-                          <div className="h-2 w-2 animate-bounce rounded-full bg-zinc-500" />
-                        </div>
+                        {currentStreamingMessage ? (
+                          <div className="prose prose-invert prose-sm max-w-none text-sm leading-relaxed">
+                            <ReactMarkdown
+                              remarkPlugins={[remarkGfm]}
+                              rehypePlugins={[rehypeHighlight]}
+                              components={{
+                                code: ({ className, children, ...props }) => {
+                                  const match = /language-(\w+)/.exec(
+                                    className ?? "",
+                                  );
+                                  return match ? (
+                                    <pre className="overflow-x-auto rounded bg-zinc-900 p-3">
+                                      <code className={className} {...props}>
+                                        {children}
+                                      </code>
+                                    </pre>
+                                  ) : (
+                                    <code
+                                      className="rounded bg-zinc-700 px-1 py-0.5 text-zinc-200"
+                                      {...props}
+                                    >
+                                      {children}
+                                    </code>
+                                  );
+                                },
+                                h1: ({ children }) => (
+                                  <h1 className="mb-2 text-lg font-bold text-zinc-100">
+                                    {children}
+                                  </h1>
+                                ),
+                                h2: ({ children }) => (
+                                  <h2 className="mb-2 text-base font-semibold text-zinc-100">
+                                    {children}
+                                  </h2>
+                                ),
+                                h3: ({ children }) => (
+                                  <h3 className="mb-1 text-sm font-medium text-zinc-100">
+                                    {children}
+                                  </h3>
+                                ),
+                                ul: ({ children }) => (
+                                  <ul className="list-inside list-disc space-y-1 text-zinc-300">
+                                    {children}
+                                  </ul>
+                                ),
+                                ol: ({ children }) => (
+                                  <ol className="list-inside list-decimal space-y-1 text-zinc-300">
+                                    {children}
+                                  </ol>
+                                ),
+                                li: ({ children }) => (
+                                  <li className="text-sm">{children}</li>
+                                ),
+                                p: ({ children }) => (
+                                  <p className="mb-2 text-zinc-300 last:mb-0">
+                                    {children}
+                                  </p>
+                                ),
+                                strong: ({ children }) => (
+                                  <strong className="font-semibold text-zinc-100">
+                                    {children}
+                                  </strong>
+                                ),
+                                em: ({ children }) => (
+                                  <em className="text-zinc-200 italic">
+                                    {children}
+                                  </em>
+                                ),
+                              }}
+                            >
+                              {currentStreamingMessage}
+                            </ReactMarkdown>
+                          </div>
+                        ) : (
+                          <div className="flex space-x-1">
+                            <div className="h-2 w-2 animate-bounce rounded-full bg-zinc-500 [animation-delay:-0.3s]" />
+                            <div className="h-2 w-2 animate-bounce rounded-full bg-zinc-500 [animation-delay:-0.15s]" />
+                            <div className="h-2 w-2 animate-bounce rounded-full bg-zinc-500" />
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -448,7 +610,7 @@ export function UnifiedInterface({
                             key={cmd.command}
                             value={cmd.example}
                             onSelect={() => {
-                              void processInput(`/${cmd.example}`);
+                              processInput(`/${cmd.example}`);
                             }}
                             className="flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-transparent data-[selected]:bg-transparent"
                           >

@@ -30,9 +30,9 @@
     ],
     "tools": [
       { "name": "Git", "level": 90 },
-      { "name": "OpenAI SDK", "level": 70 },
+      { "name": "OpenAI SDK", "level": 60 },
       { "name": "Vercel", "level": 70 },
-      { "name": "NGINX", "level": 40 },
+      { "name": "NGINX", "level": 20 },
       { "name": "Java", "level": 60 },
       { "name": "Python", "level": 50 }
     ]
@@ -52,8 +52,8 @@
         "Gemini AI",
         "Collaborative Development"
       ],
-      "github": "https://github.com/dean-yoon-jasper/collaborative-notes",
-      "demo": "https://collaborative-notes.vercel.app",
+      "github": "https://github.com/yummymf1234/bobnote.git",
+      "demo": "https://bobnote-deantan22-5232s-projects.vercel.app/",
       "image": "/projects/collaborative-notes.jpg",
       "featured": false,
       "status": "ongoing"
@@ -73,7 +73,7 @@
         "Static IP",
         "Port Forwarding"
       ],
-      "github": "https://github.com/Pacifix14/video-hook-creator",
+      "github": "",
       "demo": "",
       "image": "/projects/video-hook-system.jpg",
       "featured": false,
